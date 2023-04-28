@@ -13,7 +13,13 @@ public final class DefaultEmojiProvider: EmojiProvider {
     public init() { }
 
     public func getAll() -> [Emoji] {
-        return Smile.list().map({ Emoji(value: $0, name: name(emoji: $0).first ?? "") })
+        return Smile.list().compactMap({
+            let n = name(emoji: $0)
+            if $0.description.unicodeScalars.first?.properties.isEmoji ?? false{
+                return Emoji(value: $0, name: n.first!)
+            }
+            return nil
+        })
     }
 
 }
